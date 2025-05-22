@@ -1,11 +1,7 @@
 # Projeto GRAFOS
 # 🎬 Cinema Explorer - Visualização de Filmes em Grafo
-
-# 🧑 Arthur Vignati Moscardi - 10409688
-# 🧑 Pedro Pessuto - 10409729
-# 🧑 Ian da Cunha - 10409669
-# 🧑 Enzo Bernal - 10402685
-# 🧑 Davi Martins - 10374878
+ 
+# 🧑 Arthur Vignati Moscardi - 10409688 || Pedro Pessuto - 10409729 || Ian da Cunha - 10409669 || Enzo Bernal - 10402685 || Davi Martins - 10374878
 
 ## 📋 Sobre o Projeto
 
