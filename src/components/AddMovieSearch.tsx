@@ -35,14 +35,14 @@ export function AddMovieSearch({ onAddMovie, onRemoveMovie, selectedMovieIds }: 
   const [allMovies, setAllMovies] = useState<Movie[]>([]);
   const { toast } = useToast();
   
-  // Force initial load of popular movies
+  // Forçar carregamento inicial de filmes populares
   useEffect(() => {
     if (!searchSubmitted) {
       setSearchSubmitted(true);
     }
   }, []);
 
-  // Load genres
+  // Carregar genêros
   useEffect(() => {
     const loadGenres = async () => {
       try {
@@ -61,7 +61,7 @@ export function AddMovieSearch({ onAddMovie, onRemoveMovie, selectedMovieIds }: 
     loadGenres();
   }, [toast]);
   
-  // Query movies - either search results or popular movies if no query
+  // Consultar filmes - resultados da pesquisa ou filmes populares se não houver consulta
   const {
     data,
     isLoading,
@@ -85,15 +85,15 @@ export function AddMovieSearch({ onAddMovie, onRemoveMovie, selectedMovieIds }: 
     enabled: searchSubmitted,
   });
 
-  // Update allMovies when data changes
+  // Atualizar allMovies quando os dados forem alterados
   useEffect(() => {
     if (!data?.results) return;
     
     if (page === 1) {
-      // Reset movies when filters change or on initial load
+      // Redefinir filmes quando os filtros mudam ou no carregamento inicial
       setAllMovies(data.results);
     } else {
-      // Add new unique movies when loading more
+      // Adicione novos filmes exclusivos ao carregar mais
       const newMovies = data.results.filter(
         newMovie => !allMovies.some(existingMovie => existingMovie.id === newMovie.id)
       );
@@ -103,7 +103,7 @@ export function AddMovieSearch({ onAddMovie, onRemoveMovie, selectedMovieIds }: 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setPage(1); // Reset to page 1 on new search
+    setPage(1); // Redefinir para a página 1 em uma nova pesquisa
     const newFilters = { ...filters, searchQuery };
     setFilters(newFilters);
     setSearchSubmitted(true);
@@ -121,28 +121,28 @@ export function AddMovieSearch({ onAddMovie, onRemoveMovie, selectedMovieIds }: 
     setPage(prevPage => prevPage + 1);
   };
 
-  // Filter Handlers
+  // Manipuladores de filtros
   const handleGenreToggle = (genreId: number) => {
     const newGenres = filters.genres.includes(genreId)
       ? filters.genres.filter((id) => id !== genreId)
       : [...filters.genres, genreId];
 
     const newFilters = { ...filters, genres: newGenres };
-    setPage(1); // Reset to page 1 on filter change
+    setPage(1); // Redefinir para a página 1 na troca do filtro
     setFilters(newFilters);
     setSearchSubmitted(true);
   };
 
   const handleYearChange = (values: number[]) => {
     const newFilters = { ...filters, yearRange: values as [number, number] };
-    setPage(1); // Reset to page 1 on filter change
+    setPage(1); // Redefinir para a página 1 na troca do filtro
     setFilters(newFilters);
     setSearchSubmitted(true);
   };
 
   const handleRatingChange = (values: number[]) => {
     const newFilters = { ...filters, ratingRange: values as [number, number] };
-    setPage(1); // Reset to page 1 on filter change
+    setPage(1); // Redefinir para a página 1 na troca do filtro
     setFilters(newFilters);
     setSearchSubmitted(true);
   };
@@ -150,14 +150,14 @@ export function AddMovieSearch({ onAddMovie, onRemoveMovie, selectedMovieIds }: 
   const clearSearch = () => {
     setSearchQuery("");
     setFilters({ ...filters, searchQuery: "" });
-    setPage(1); // Reset to page 1 on clear search
+    setPage(1); // Redefinir para a página 1 na pesquisa limpa
     setSearchSubmitted(true);
   };
 
   const resetFilters = () => {
     setFilters(initialFilters);
     setSearchQuery("");
-    setPage(1); // Reset to page 1 on reset filters
+    setPage(1); // Redefinir para a página 1 sobre filtros de redefinição
     setSearchSubmitted(true);
   };
 

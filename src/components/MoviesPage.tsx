@@ -19,7 +19,7 @@ export function MoviesPage() {
   const [selectedForSimilar, setSelectedForSimilar] = useState<number | null>(null);
   const { toast } = useToast();
 
-  // Fetch base movies for recommendations
+  // Fetch filmes base para recomendaçõess
   const {
     data,
     isLoading,
@@ -30,11 +30,11 @@ export function MoviesPage() {
     queryFn: () => fetchMovies(currentPage),
   });
 
-  // Add movies from API to our local collection
+  // Adiciona filmes da API à nossa coleção local
   useEffect(() => {
     if (!data?.results) return;
     
-    // Add new unique movies to our collection
+    // Adiciona novos filmes exclusivos à nossa coleção
     const newMovies = data.results.filter(
       newMovie => !allMovies.some(existingMovie => existingMovie.id === newMovie.id)
     );
@@ -44,14 +44,14 @@ export function MoviesPage() {
     }
   }, [data, allMovies]);
 
-  // Get selected movies from our collection
+  // Obtem filmes selecionados de nossa coleção
   const selectedMovies = selectedMovieIds
     .map(id => allMovies.find(movie => movie.id === id))
     .filter(movie => movie !== undefined) as Movie[];
 
-  // Handle fetching similar movies when a movie is selected
+  // Manipula a busca de filmes semelhantes quando um filme é selecionado
   const handleAddSimilarMovies = useCallback((movies: Movie[]) => {
-    // Add new unique movies to our collection
+    // Adiciona novos filmes exclusivos à nossa coleção
     const newMovies = movies.filter(
       newMovie => !allMovies.some(existingMovie => existingMovie.id === newMovie.id)
     );
@@ -65,27 +65,27 @@ export function MoviesPage() {
     }
   }, [allMovies, toast]);
 
-  // Use our custom hook to get related movies
+  // Gancho personalizado para obter filmes relacionados
   const { isLoading: isLoadingSimilar } = useRelatedMovies({
     selectedMovieId: selectedForSimilar,
     onNewMovies: handleAddSimilarMovies
   });
   
-  // Get recommended movies based on the selected movies
+  // Obtem filmes recomendados com base nos filmes selecionados
   const getRecommendedMovies = useCallback(() => {
     if (selectedMovieIds.length === 0 || !allMovies.length) return [];
 
-    // Get all genre IDs from selected movies
+    // Obtem todos os IDs de gênero de filmes selecionados
     const selectedGenreIds = selectedMovies.flatMap(movie => movie.genre_ids);
     const uniqueGenreIds = [...new Set(selectedGenreIds)];
     
-    // Find movies with similar genres
+    // Encontra filmes com gêneros semelhantes
     return allMovies
       .filter((movie) => {
-        // Don't recommend already selected movies
+        // Não recomenda filmes já selecionados
         if (selectedMovieIds.includes(movie.id)) return false;
         
-        // Check for genre overlap
+        // Verifica se há sobreposição de gênero
         const commonGenres = movie.genre_ids.filter((genre) =>
           uniqueGenreIds.includes(genre)
         );
@@ -93,7 +93,7 @@ export function MoviesPage() {
         return commonGenres.length > 0;
       })
       .sort((a, b) => {
-        // Sort by number of common genres
+        // Classifica por número de gêneros comuns
         const commonGenresA = a.genre_ids.filter((genre) =>
           uniqueGenreIds.includes(genre)
         ).length;
@@ -104,12 +104,12 @@ export function MoviesPage() {
         
         return commonGenresB - commonGenresA;
       })
-      .slice(0, maxRecommendations); // Use the maxRecommendations state
+      .slice(0, maxRecommendations); // Usa o estado maxRecommendations
   }, [selectedMovieIds, allMovies, selectedMovies, maxRecommendations]);
 
   const recommendedMovies = getRecommendedMovies();
 
-  // Handle error notifications
+  // Lidando com notificações de erro
   useEffect(() => {
     if (isError) {
       toast({
@@ -121,16 +121,16 @@ export function MoviesPage() {
   }, [isError, error, toast]);
 
   const handleAddMovie = (movie: Movie) => {
-    // Add movie to selected list if not already there
+    // Adiciona filme à lista selecionada se ainda não estiver lá
     if (!selectedMovieIds.includes(movie.id)) {
       setSelectedMovieIds(current => [...current, movie.id]);
       
-      // Make sure the movie is in allMovies
+      // Certifica de que o filme esteja em todos os filmes
       if (!allMovies.some(m => m.id === movie.id)) {
         setAllMovies(current => [...current, movie]);
       }
 
-      // Set this movie as the one to fetch similar movies for
+      // Define este filme como aquele para buscar filmes semelhantes
       setSelectedForSimilar(movie.id);
 
       toast({
@@ -152,19 +152,19 @@ export function MoviesPage() {
     });
   };
 
-  // Update max recommendations with limits
+  // Atualiza recomendações máximas com limites
   const handleMaxRecommendationsChange = (value: number) => {
-    // Ensure max recommendations is between 6 and 12
+    // Garante que a recomendação máxima esteja entre 6 e 12
     const clamped = Math.max(6, Math.min(12, value));
     setMaxRecommendations(clamped);
   };
 
-  // Update node click handler to only update selected node for analysis
+  // Atualiza o manipulador de cliques do nó para atualizar apenas o nó selecionado para análise
   const handleNodeClick = (movieId: number) => {
-    // No selection/deselection, just let the graph component handle updating the selected node
+    // Nenhuma seleção/desseleção, apenas deixe o componente gráfico lidar com a atualização do nó selecionado
   };
 
-  // Combine selected and recommended movies for display in the graph
+  // Combina filmes selecionados e recomendados para exibição no gráfico
   const moviesToDisplay = allMovies.length > 0
     ? [...selectedMovies, ...recommendedMovies]
     : [];
@@ -175,16 +175,16 @@ export function MoviesPage() {
         <h1 className="text-3xl font-bold mb-6 text-primary">Cinema Explorer</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column */}
+          {/* Coluna Esquerda */}
           <div className="lg:col-span-6 space-y-6">
-            {/* Selected Movies List */}
+            {/* Lista de Filmes Selecionados */}
             <SelectedMoviesList 
               selectedMovies={selectedMovies} 
               onRemoveMovie={handleRemoveMovie}
               onClearAll={handleClearAllSelected}
             />
             
-            {/* Recommended Movies */}
+            {/* Filmes recomendados */}
             <RecommendedMovies 
               recommendedMovies={recommendedMovies}
               isLoading={isLoading && currentPage === 1}
@@ -192,7 +192,7 @@ export function MoviesPage() {
               onAddMovie={handleAddMovie}
             />
 
-            {/* Add Movie Search with Filters */}
+            {/* Adiciona pesquisa de filmes com filtros */}
             <AddMovieSearch 
               onAddMovie={handleAddMovie}
               onRemoveMovie={handleRemoveMovie}
@@ -200,7 +200,7 @@ export function MoviesPage() {
             />
           </div>
           
-          {/* Right Column - Graph */}
+          {/* Coluna Direita - Grafo */}
           <div className="lg:col-span-6 min-h-[100vh] overflow-auto pb-20">
             <ReactFlowProvider>
               <MovieGraph
@@ -214,7 +214,7 @@ export function MoviesPage() {
         </div>
       </div>
       
-      {/* Loading indicator for similar movies */}
+      {/* Indicador de carregamento para filmes semelhantes */}
       {isLoadingSimilar && (
         <div className="fixed bottom-4 right-4 bg-background border border-border rounded-md p-2 shadow-md">
           <div className="flex items-center">

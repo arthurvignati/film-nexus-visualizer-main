@@ -58,7 +58,7 @@ export function MoviesGrid({
         ))}
       </div>
       
-      {/* Load More Button */}
+      {/* Botão Carregar Mais */}
       {hasMoreMovies && (
         <div className="flex justify-center mt-6">
           <Button 

@@ -34,22 +34,22 @@ export function MovieCard({ movie, isSelected, onClick, isRecommended = false }:
           loading="lazy"
         />
         
-        {/* Overlay Gradient */}
+        {/* Gradiente de sobreposição */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80 group-hover:opacity-100" />
         
-        {/* Rating */}
+        {/* Avaliação */}
         <div className="absolute top-2 right-2 flex items-center justify-center w-10 h-10 rounded-full bg-black/60 text-movie-rating font-bold">
           {movie.vote_average.toFixed(1)}
         </div>
         
-        {/* Recommended Badge - Moved to top left */}
+        {/* Emblema recomendado - movido para o canto superior esquerdo */}
         {isRecommended && (
           <div className="absolute top-2 left-2 bg-primary/80 text-white text-xs px-2 py-1 rounded-full">
             Recomendado
           </div>
         )}
         
-        {/* Text Content */}
+        {/* Conteúdo em texto */}
         <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
           <h3 className="font-bold text-lg truncate">{movie.title}</h3>
           <p className="text-sm text-gray-300">{releaseYear}</p>

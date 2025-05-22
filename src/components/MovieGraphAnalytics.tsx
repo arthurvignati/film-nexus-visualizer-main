@@ -54,10 +54,10 @@ export function MovieGraphAnalytics({
   const [minimumSpanningTree, setMinimumSpanningTree] = useState<string[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
-  // Run graph algorithms when nodes, edges, or selected movie changes
+  // Executa algoritmos de gráfico quando nós, arestas ou filmes selecionados forem alterados
   useEffect(() => {
     if (nodes.length > 0 && edges.length > 0) {
-      // Update selected movie info
+      // Atualiza informações do filme selecionado
       if (selectedMovieId) {
         const movie = movies.find(m => m.id.toString() === selectedMovieId);
         setSelectedMovie(movie || null);
@@ -65,18 +65,18 @@ export function MovieGraphAnalytics({
         setSelectedMovie(null);
       }
 
-      // Build adjacency list
+      // Constrói lista de adjacências
       const adjacencyList = buildAdjacencyList(movies, edges);
 
-      // Check connectivity
+      // Verifica a conectividade
       const connected = isGraphConnected(adjacencyList);
       setIsConnected(connected);
 
-      // Determine start node for traversals
+      // Determina o nó inicial para travessias
       const startNodeId = selectedMovieId || nodes[0].id;
       setTraversalStartNodeId(startNodeId);
 
-      // Run DFS and BFS if we have a valid start node
+      // Executa DFS e BFS se tivermos um nó inicial válido
       if (startNodeId && adjacencyList.has(startNodeId)) {
         const dfs = depthFirstSearch(adjacencyList, startNodeId);
         const bfs = breadthFirstSearch(adjacencyList, startNodeId);
@@ -84,21 +84,21 @@ export function MovieGraphAnalytics({
         setDfsResult(dfs);
         setBfsResult(bfs);
 
-        // Set default end node if not already set or if it doesn't exist anymore
+        // Define o nó final padrão se ainda não estiver definido ou se não existir mais
         if (!endNodeId || !adjacencyList.has(endNodeId)) {
-          // Choose a node that's not the start node if possible
+          // Escolhe um nó que não seja o nó inicial, se possível
           const otherNodes = Array.from(adjacencyList.keys()).filter(id => id !== startNodeId);
           if (otherNodes.length > 0) {
             setEndNodeId(otherNodes[0]);
           } else {
-            setEndNodeId(startNodeId); // Fallback to start node if no other nodes
+            setEndNodeId(startNodeId); // Retorna ao nó inicial se não houver outros nós
           }
         }
 
-        // Create edge weights for shortest path and MST
+        // Cria pesos de aresta para o caminho mais curto e MST
         const edgeWeights = createEdgeWeightsMap(edges);
 
-        // Run Dijkstra if we have both start and end nodes
+        // Executa Dijkstra se tivermos nós inicial e final
         if (startNodeId && endNodeId) {
           console.log(`Running Dijkstra from ${startNodeId} to ${endNodeId}`);
           const path = dijkstraShortestPath(adjacencyList, edgeWeights, startNodeId, endNodeId);
@@ -106,14 +106,14 @@ export function MovieGraphAnalytics({
           console.log("Dijkstra result:", path);
         }
 
-        // Run Kruskal to find minimum spanning tree
+        // Executa Kruskal para encontrar a árvore de extensão mínima
         const nodeIds = Array.from(adjacencyList.keys());
         const mst = findMinimumSpanningTree(nodeIds, edges);
         const mstTraversal = getMstTraversalOrder(mst, startNodeId);
         setMinimumSpanningTree(mstTraversal);
       }
     } else {
-      // Reset results if no nodes/edges
+      // Redefine resultados se não houver nós/arestas
       setDfsResult([]);
       setBfsResult([]);
       setIsConnected(false);
@@ -125,13 +125,13 @@ export function MovieGraphAnalytics({
     }
   }, [nodes, edges, selectedMovieId, movies, endNodeId]);
 
-  // Find movie title by ID
+  // Encontra o título do filme por ID
   const getMovieTitle = (movieId: string): string => {
     const movie = movies.find(m => m.id.toString() === movieId);
     return movie ? movie.title : movieId;
   };
 
-  // Handle end node selection for shortest path
+  // Manipula seleção de nó final para caminho mais curto
   const handleEndNodeChange = (value: string) => {
     setEndNodeId(value);
   };
@@ -175,7 +175,7 @@ export function MovieGraphAnalytics({
       {selectedMovie && (
         <Card className="p-3 bg-muted/30 overflow-hidden">
           <div className="flex">
-            {/* Movie poster */}
+            {/* Filme poster */}
             <div className="w-1/4 mr-3">
               <CardImage
                 src={getImageUrl(selectedMovie.poster_path)}
@@ -183,7 +183,7 @@ export function MovieGraphAnalytics({
                 containerClassName="h-24 w-auto rounded-md"
               />
             </div>
-            {/* Movie info */}
+            {/* Filme informações */}
             <div className="w-3/4 space-y-2">
               <div className="flex items-center justify-between">
                 <h4 className="font-medium">Filme Selecionado</h4>

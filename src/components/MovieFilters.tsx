@@ -101,7 +101,7 @@ export function MovieFilters({ onFilterChange }: MovieFiltersProps) {
 
   return (
     <div className="space-y-4 p-4 bg-card rounded-lg">
-      {/* Search Bar */}
+      {/* Barra de pesquisa */}
       <form onSubmit={handleSearchSubmit} className="relative">
         <Input
           value={searchInputValue}
@@ -130,7 +130,7 @@ export function MovieFilters({ onFilterChange }: MovieFiltersProps) {
         </Button>
       </form>
 
-      {/* Genres */}
+      {/* Gêneros */}
       <div>
         <h3 className="text-sm font-medium mb-2">Gêneros</h3>
         <div className="flex flex-wrap gap-2">
@@ -147,7 +147,7 @@ export function MovieFilters({ onFilterChange }: MovieFiltersProps) {
         </div>
       </div>
 
-      {/* Year Range */}
+      {/* Intervalo anual */}
       <div>
         <h3 className="text-sm font-medium mb-2">
           Ano: {filters.yearRange[0]} - {filters.yearRange[1]}
@@ -163,7 +163,7 @@ export function MovieFilters({ onFilterChange }: MovieFiltersProps) {
         />
       </div>
 
-      {/* Rating Range */}
+      {/* Faixa de classificação */}
       <div>
         <h3 className="text-sm font-medium mb-2">
           Classificação: {filters.ratingRange[0]} - {filters.ratingRange[1]}
@@ -179,7 +179,7 @@ export function MovieFilters({ onFilterChange }: MovieFiltersProps) {
         />
       </div>
 
-      {/* Reset Filters */}
+      {/* Redefinir filtros */}
       {hasActiveFilters && (
         <Button
           variant="outline"

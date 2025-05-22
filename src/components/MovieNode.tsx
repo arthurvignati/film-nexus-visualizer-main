@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { MovieNodeData } from "@/types/movie";
 
 const MovieNode = ({ data }: NodeProps) => {
-  // Since data is typed as Record<string, unknown>, we need to cast it
+  // Como os dados são digitados como Record<string, unknown>, precisamos convertê-los
   const { movie, selected, recommended } = data as MovieNodeData;
   
   return (

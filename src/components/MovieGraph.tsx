@@ -28,12 +28,12 @@ interface MovieGraphProps {
   onNodeClick?: (movieId: number) => void;
 }
 
-// Define node types with the correct typing for ReactFlow
+// Defina os tipos de nós com a tipagem correta para ReactFlow
 const nodeTypes: NodeTypes = {
   movieNode: MovieNode
 };
 
-// Custom edge with weight label using proper typing for ReactFlow
+// Borda personalizada com rótulo de peso usando digitação adequada para ReactFlow
 const WeightedEdge = memo(({
   id,
   data,
@@ -49,7 +49,7 @@ const WeightedEdge = memo(({
   label
 }: EdgeProps) => {
   
-  // Calculate path for the edge
+  // Calcular caminho para a aresta
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -59,7 +59,7 @@ const WeightedEdge = memo(({
     targetPosition
   });
 
-  // Get strength from edge data
+  // Obtenha força com dados de ponta
   const weight = data?.strength || '';
 
   return (
@@ -100,7 +100,7 @@ const WeightedEdge = memo(({
 
 WeightedEdge.displayName = 'WeightedEdge';
 
-// Define edge types
+// Definir tipos de arestas
 const edgeTypes: EdgeTypes = {
   weighted: WeightedEdge
 };
@@ -112,19 +112,19 @@ export function MovieGraph({
   onNodeClick
 }: MovieGraphProps) {
   const { fitView } = useReactFlow();
-  // Default to 6 recommendations, capped between 6 and 12
+  // Padrão para 6 recomendações, limitado entre 6 e 12
   const [maxRecommendations, setMaxRecommendations] = useState(6);
   const [showSelectedMoviesOnly, setShowSelectedMoviesOnly] = useState(false);
   const fitViewTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
 
-  // Filter movies based on selected view mode
+  // Filtrar filmes com base no modo de visualização selecionado
   const moviesToDisplay = showSelectedMoviesOnly
     ? selectedMovieIds.map(id => movies.find(movie => movie.id === id)).filter(Boolean) as Movie[]
     : [...selectedMovieIds.map(id => movies.find(movie => movie.id === id)).filter(Boolean) as Movie[],
     ...recommendedMovies.slice(0, maxRecommendations)];
 
-  // Use our custom hook for graph management with filtered movies
+  // Gancho personalizado para gerenciamento de gráficos com filmes filtrados
   const {
     nodes,
     edges,
@@ -137,13 +137,13 @@ export function MovieGraph({
     showSelectedMoviesOnly ? [] : recommendedMovies.slice(0, maxRecommendations)
   );
 
-  // Process edges to add weight labels - always show weights
+  // Processa as bordas para adicionar rótulos de peso - sempre mostre os pesos
   const edgesWithWeights = edges.map(edge => ({
     ...edge,
     type: 'weighted'
   }));
 
-  // Calculate container height - ensure full height with minimum
+  // Calcula a altura do contêiner - garantir a altura total com o mínimo
   const graphContainerStyle = {
     height: '100%',
     minHeight: '40vh',
@@ -152,18 +152,18 @@ export function MovieGraph({
 
   useEffect(() => {
     if (nodes.length > 0) {
-      // Clear any existing timeout
+      // Limpar qualquer tempo limite existente
       if (fitViewTimeoutRef.current) {
         clearTimeout(fitViewTimeoutRef.current);
       }
 
-      // Fit view after a short delay to ensure nodes are rendered
+      // Ajustar a visualização após um breve atraso para garantir que os nós sejam renderizados
       fitViewTimeoutRef.current = setTimeout(() => {
         fitView({ padding: 0.2 });
       }, 100);
     }
 
-    // Clean up timeout on unmount
+    // Tempo limite de limpeza na desmontagem
     return () => {
       if (fitViewTimeoutRef.current) {
         clearTimeout(fitViewTimeoutRef.current);
@@ -171,7 +171,7 @@ export function MovieGraph({
     };
   }, [fitView, nodes.length, showSelectedMoviesOnly]);
 
-  // Set selected node based on selectedMovieIds
+  // Definir nó selecionado com base em selectedMovieIds
   useEffect(() => {
     if (selectedMovieIds.length > 0) {
       setSelectedNode(selectedMovieIds[selectedMovieIds.length - 1].toString());
@@ -181,7 +181,7 @@ export function MovieGraph({
   }, [selectedMovieIds]);
 
   const handleMaxRecommendationsChange = (value: number) => {
-    // Ensure max recommendations is between 6 and 12
+    // Garantir que a recomendação máxima esteja entre 6 e 12
     const clamped = Math.max(6, Math.min(12, value));
     setMaxRecommendations(clamped);
   };
@@ -190,11 +190,11 @@ export function MovieGraph({
     setShowSelectedMoviesOnly(value);
   };
 
-  // Changed to only update the selected node for analytics, not toggle selection
+  // Alterado para atualizar apenas o nó selecionado para análise, não alternar a seleção
   const handleNodeClick = useCallback((event: React.MouseEvent, node: any) => {
     const movieId = parseInt(node.id);
     if (!isNaN(movieId)) {
-      // Only update the selected node for analytics
+      // Atualizar apenas o nó selecionado para análise
       setSelectedNode(node.id);
     }
   }, []);

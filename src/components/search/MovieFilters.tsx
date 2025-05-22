@@ -27,7 +27,7 @@ export function MovieFilters({
 }: MovieFiltersProps) {
   return (
     <div className="space-y-4 p-4 bg-card rounded-lg mb-4">
-      {/* Genres */}
+      {/* Generos */}
       <div>
         <h3 className="text-sm font-medium mb-2">Gêneros</h3>
         <div className="flex flex-wrap gap-2">
@@ -44,7 +44,7 @@ export function MovieFilters({
         </div>
       </div>
 
-      {/* Year Range */}
+      {/* Intervalo anual */}
       <div>
         <h3 className="text-sm font-medium mb-2">
           Ano: {filters.yearRange[0]} - {filters.yearRange[1]}
@@ -60,7 +60,7 @@ export function MovieFilters({
         />
       </div>
 
-      {/* Rating Range */}
+      {/* Faixa de classificação */}
       <div>
         <h3 className="text-sm font-medium mb-2">
           Classificação: {filters.ratingRange[0]} - {filters.ratingRange[1]}
@@ -76,7 +76,7 @@ export function MovieFilters({
         />
       </div>
 
-      {/* Reset Filters */}
+      {/* Redefinir filtros */}
       {hasActiveFilters && (
         <Button
           variant="outline"
