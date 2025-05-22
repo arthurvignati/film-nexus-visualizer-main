@@ -1,6 +1,12 @@
 # Projeto GRAFOS
 # 🎬 Cinema Explorer - Visualização de Filmes em Grafo
 
+# 🧑 Arthur Vignati Moscardi - 10409688
+# 🧑 Pedro Pessuto - 10409729
+# 🧑 Ian da Cunha - 10409669
+# 🧑 Enzo Bernal - 10402685
+# 🧑 Davi Martins - 10374878
+
 ## 📋 Sobre o Projeto
 
 O Cinema Explorer é uma aplicação web interativa que visualiza relações entre filmes usando estruturas de grafos. Ela permite aos usuários explorar filmes, descobrir recomendações e analisar suas conexões através de visualizações gráficas e algoritmos avançados de teoria dos grafos.
