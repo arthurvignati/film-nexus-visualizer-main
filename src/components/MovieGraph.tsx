@@ -124,7 +124,7 @@ export function MovieGraph({
     : [...selectedMovieIds.map(id => movies.find(movie => movie.id === id)).filter(Boolean) as Movie[],
     ...recommendedMovies.slice(0, maxRecommendations)];
 
-  // Gancho personalizado para gerenciamento de gráficos com filmes filtrados
+  // Gancho personalizado para gerenciamento de grafos com filmes filtrados
   const {
     nodes,
     edges,

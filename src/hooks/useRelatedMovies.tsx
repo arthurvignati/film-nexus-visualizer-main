@@ -20,10 +20,10 @@ const headers = {
 export function useRelatedMovies({ selectedMovieId, onNewMovies }: RelatedMoviesProps) {
   const [processingId, setProcessingId] = useState<number | null>(null);
 
-  // Ensure selectedMovieId is a number
+  // Certifica de que selectedMovieId seja um número
   const movieId = typeof selectedMovieId === 'string' ? parseInt(selectedMovieId) : selectedMovieId;
 
-  // Fetch similar movies when a movie is selected
+  // Busca filmes semelhantes quando um filme for selecionado
   const { data: similarMovies, isLoading } = useQuery({
     queryKey: ['similarMovies', movieId],
     queryFn: async () => {
@@ -44,10 +44,10 @@ export function useRelatedMovies({ selectedMovieId, onNewMovies }: RelatedMovies
       return data;
     },
     enabled: !!movieId && movieId !== processingId,
-    staleTime: 5 * 60 * 1000, // 5 minutes cache
+    staleTime: 5 * 60 * 1000, // 5 minutos cache
   });
 
-  // When we get new related movies, call the callback
+  // Quando tivermos novos filmes relacionados, ligue para o retorno
   useEffect(() => {
     if (similarMovies?.results && similarMovies.results.length > 0 && movieId !== processingId) {
       console.log(`Processing ${similarMovies.results.length} similar movies for ID ${movieId}`);

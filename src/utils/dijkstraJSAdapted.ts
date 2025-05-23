@@ -58,23 +58,23 @@ export function dijkstraJS(
 }
 
 /**
- * Calculates the shortest path from source to target using Dijkstra's algorithm
- * @param adjacencyList Map of each node to a list of its neighbors with weights
- * @param source Starting node ID
- * @param target Target node ID
- * @returns Object containing the path array and total distance
+ * Calcula o caminho mais curto da origem ao destino usando o algoritmo de Dijkstra
+ * @param adjacencyList Mapa de cada nó para uma lista de seus vizinhos com pesos
+ * @param source ID do nó inicial
+ * @param target ID do nó de destino
+ * @returns Objeto contendo a matriz de caminho e a distância total
  */
 export function dijkstraShortestPathJS(
   adjacencyList: Map<string, AdjListNode[]>,
   source: string,
   target: string
 ): { path: string[], distance: number } {
-  // Track distances and previous nodes for path reconstruction
+  // Distâncias de trilha e nós anteriores para reconstrução de caminho
   const dist: Record<string, number> = {};
   const prev: Record<string, string | null> = {};
   const visited: Record<string, boolean> = {};
 
-  // Initialize distances, previous nodes, and visited status
+  // Inicializar distâncias, nós anteriores e status visitados
   for (const node of adjacencyList.keys()) {
     dist[node] = Infinity;
     prev[node] = null;
@@ -84,7 +84,7 @@ export function dijkstraShortestPathJS(
 
   const V = adjacencyList.size;
   for (let i = 0; i < V - 1; i++) {
-    // Find unvisited node with minimum distance
+    // Encontre um nó não visitado com distância mínima
     let u: string | null = null;
     let best = Infinity;
     
@@ -96,11 +96,11 @@ export function dijkstraShortestPathJS(
     }
     
     if (u === null) break;
-    if (u === target) break; // Early exit if we've reached the target
+    if (u === target) break; // Saída antecipada se atingirmos a meta
     
     visited[u] = true;
 
-    // Update distances to neighbors
+    // Atualiza distâncias para vizinhos
     for (const { dest, weight } of adjacencyList.get(u) || []) {
       const alt = dist[u] + weight;
       if (!visited[dest] && alt < dist[dest]) {
@@ -110,16 +110,16 @@ export function dijkstraShortestPathJS(
     }
   }
 
-  // Reconstruct the shortest path
+  // Reconstruir o caminho mais curto
   const path: string[] = [];
   let current: string | null = target;
   
-  // If target is not reachable, return empty path
+  // Se o alvo não for alcançável, retorne o caminho vazio
   if (dist[target] === Infinity) {
     return { path: [], distance: Infinity };
   }
   
-  // Build the path from target to source, then reverse it
+  // Construa o caminho do alvo à fonte e depois inverta-o
   while (current !== null) {
     path.unshift(current);
     current = prev[current];
@@ -132,10 +132,10 @@ export function dijkstraShortestPathJS(
 }
 
 /**
- * Helper function to convert the standard adjacency list to the format required by dijkstraJS
- * @param standardAdjList The standard adjacency list from buildAdjacencyList
- * @param edgeWeights Map of edge weights
- * @returns Converted adjacency list
+ * Função auxiliar para converter a lista de adjacência padrão para o formato exigido pelo dijkstraJS
+ * @param standardAdjList A lista de adjacência padrão de buildAdjacencyList
+ * @param edgeWeights Mapa de pesos de aresta
+ * @returns Lista de adjacência convertida
  */
 export function convertAdjacencyListFormat(
   standardAdjList: Map<string, string[]>,
@@ -147,7 +147,7 @@ export function convertAdjacencyListFormat(
     const nodeNeighbors: AdjListNode[] = [];
     
     for (const neighbor of neighbors) {
-      // Try both directions for the edge weight
+      // Experimente ambas as direções para o peso da borda
       const edgeKey1 = `${nodeId}-${neighbor}`;
       const edgeKey2 = `${neighbor}-${nodeId}`;
       const weight = edgeWeights.get(edgeKey1) || edgeWeights.get(edgeKey2) || 1;

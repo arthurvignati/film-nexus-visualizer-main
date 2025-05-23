@@ -54,7 +54,7 @@ export function MovieGraphAnalytics({
   const [minimumSpanningTree, setMinimumSpanningTree] = useState<string[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
-  // Executa algoritmos de gráfico quando nós, arestas ou filmes selecionados forem alterados
+  // Executa algoritmos de grafos quando nós, arestas ou filmes selecionados forem alterados
   useEffect(() => {
     if (nodes.length > 0 && edges.length > 0) {
       // Atualiza informações do filme selecionado

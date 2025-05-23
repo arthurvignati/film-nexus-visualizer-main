@@ -161,10 +161,10 @@ export function MoviesPage() {
 
   // Atualiza o manipulador de cliques do nó para atualizar apenas o nó selecionado para análise
   const handleNodeClick = (movieId: number) => {
-    // Nenhuma seleção/desseleção, apenas deixe o componente gráfico lidar com a atualização do nó selecionado
+    // Nenhuma seleção/desseleção, apenas deixe o componente grafos lidar com a atualização do nó selecionado
   };
 
-  // Combina filmes selecionados e recomendados para exibição no gráfico
+  // Combina filmes selecionados e recomendados para exibição no grafos
   const moviesToDisplay = allMovies.length > 0
     ? [...selectedMovies, ...recommendedMovies]
     : [];

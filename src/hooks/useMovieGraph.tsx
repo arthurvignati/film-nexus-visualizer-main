@@ -19,25 +19,25 @@ export function useMovieGraph(
   const [nodes, setNodes] = useState<Node<MovieNodeData>[]>([]);
   const [edges, setEdges] = useState<Edge<MovieEdgeData>[]>([]);
   
-  // Store node positions to preserve layout between updates
+  // Armazena as posições dos nós para preservar o layout entre as atualizações
   const [nodePositions, setNodePositions] = useState<Record<string, {x: number, y: number}>>({});
   
-  // Use refs to track previous state to avoid unnecessary updates
+  // Usa referências para rastrear o estado anterior e evitar atualizações desnecessárias
   const prevMoviesRef = useRef<Movie[]>([]);
   const prevSelectedIdsRef = useRef<number[]>([]);
   const prevRecommendedMoviesRef = useRef<Movie[]>([]);
   
-  // Handle node changes
+  // Lida com alterações de nó
   const onNodesChange = useCallback((changes: NodeChange[]) => {
     setNodes((nds) => applyNodeChanges(changes, nds) as Node<MovieNodeData>[]);
   }, []);
 
-  // Handle edge changes
+  // Lida com alterações de borda
   const onEdgesChange = useCallback((changes: EdgeChange[]) => {
     setEdges((eds) => applyEdgeChanges(changes, eds) as Edge<MovieEdgeData>[]);
   }, []);
   
-  // Preserve node positions when nodes change position
+  // Preserva posições de nós quando os nós mudam de posição
   const onNodeDragStop = useCallback((event: React.MouseEvent, node: Node<MovieNodeData>) => {
     setNodePositions(prev => ({
       ...prev,
@@ -45,7 +45,7 @@ export function useMovieGraph(
     }));
   }, []);
 
-  // Update graph when movies, selections, or recommendations change
+  // Atualiza grafo quando filmes, seleções ou recomendações mudarem
   useEffect(() => {
     if (movies.length === 0) {
       setNodes([]);
@@ -53,10 +53,10 @@ export function useMovieGraph(
       return;
     }
 
-    // Extract IDs for quick lookup
+    // Extrair IDs para consulta rápida
     const recommendedMovieIds = recommendedMovies.map(movie => movie.id);
     
-    // Check if we really need to update
+    // Verificar se realmente precisamos atualizar
     const currentMovieIds = movies.map(m => m.id).sort().join(',');
     const prevMovieIds = prevMoviesRef.current.map(m => m.id).sort().join(',');
     const selectedIdsStr = selectedMovieIds.sort().join(',');
@@ -64,7 +64,7 @@ export function useMovieGraph(
     const recommendedMoviesStr = recommendedMovies.map(m => m.id).sort().join(',');
     const prevRecommendedMoviesStr = prevRecommendedMoviesRef.current.map(m => m.id).sort().join(',');
     
-    // Skip update if nothing important changed
+    // Pular atualização se nada importante mudou
     if (
       currentMovieIds === prevMovieIds && 
       selectedIdsStr === prevSelectedIdsStr && 
@@ -74,12 +74,12 @@ export function useMovieGraph(
       return;
     }
     
-    // Update our refs with current state
+    // Atualizar nossas referências com o estado atual
     prevMoviesRef.current = [...movies];
     prevSelectedIdsRef.current = [...selectedMovieIds];
     prevRecommendedMoviesRef.current = [...recommendedMovies];
     
-    // Create nodes from movies
+    // Criar nós a partir de filmes
     const newNodes = createNodes(
       movies, 
       selectedMovieIds, 
@@ -87,17 +87,17 @@ export function useMovieGraph(
       nodePositions
     );
     
-    // Store current node positions
+    // Armazena as posições atuais dos nós
     const newPositions: Record<string, {x: number, y: number}> = {};
     newNodes.forEach(node => {
       newPositions[node.id] = node.position;
     });
     setNodePositions(prev => ({ ...prev, ...newPositions }));
 
-    // Create edges between movies that share genres
+    // Cria limites entre filmes que compartilham gêneros
     const newEdges = createEdges(movies, selectedMovieIds, recommendedMovieIds);
 
-    // Update nodes and edges
+    // Atualiza nós e arestas
     setNodes(newNodes);
     setEdges(newEdges);
     

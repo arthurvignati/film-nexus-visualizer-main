@@ -3,17 +3,17 @@ import { Node, Edge, Position, MarkerType } from "@xyflow/react";
 import { MovieNodeData, MovieEdgeData } from "@/types/movie";
 import { AdjListNode, dijkstraShortestPathJS, convertAdjacencyListFormat } from "./dijkstraJSAdapted";
 
-// Force-directed layout positioning with improved anti-overlap mechanism
+// Posicionamento de layout direcionado por força com mecanismo anti-sobreposição aprimorado
 export const generateForceDirectedLayout = (
   movies: Movie[], 
   width = 800, 
   height = 700, 
-  iterations = 150 // Increased iterations for better layout
+  iterations = 150 // Aumento de iterações para melhor layout
 ) => {
   const positions: Record<string, {x: number, y: number}> = {};
   const nodes: Array<{id: string, x: number, y: number, vx: number, vy: number}> = [];
   
-  // Initialize positions in a grid pattern instead of random to reduce initial overlaps
+  // Inicializar posições em um padrão de grade em vez de aleatório para reduzir sobreposições iniciais
   const moviesPerRow = Math.ceil(Math.sqrt(movies.length));
   const cellWidth = width / (moviesPerRow + 1);
   const cellHeight = height / (Math.ceil(movies.length / moviesPerRow) + 1);
@@ -23,31 +23,31 @@ export const generateForceDirectedLayout = (
     const row = Math.floor(index / moviesPerRow);
     const col = index % moviesPerRow;
     
-    // Add some initial randomness within the cell
+    // Adicionar alguma aleatoriedade inicial dentro da célula
     const x = (col + 1) * cellWidth + (Math.random() - 0.5) * cellWidth * 0.5;
     const y = (row + 1) * cellHeight + (Math.random() - 0.5) * cellHeight * 0.5;
     
     nodes.push({ id, x, y, vx: 0, vy: 0 });
   });
   
-  // Run force-directed algorithm iterations
-  const repulsionFactor = 5000; // Increased repulsion strength
-  const minDistance = 180;      // Increased minimum distance between nodes
+  // Executar iterações de algoritmos direcionados por força
+  const repulsionFactor = 5000; // Aumento da força de repulsão
+  const minDistance = 180;      // Aumento da distância mínima entre nós
   
   for (let i = 0; i < iterations; i++) {
-    // Calculate forces between all pairs of nodes
+    // Calcular forças entre todos os pares de nós
     for (let j = 0; j < nodes.length; j++) {
       const nodeA = nodes[j];
       
       for (let k = j + 1; k < nodes.length; k++) {
         const nodeB = nodes[k];
         
-        // Calculate distance and direction
+        // Calcular distância e direção
         const dx = nodeB.x - nodeA.x;
         const dy = nodeB.y - nodeA.y;
         const distance = Math.sqrt(dx * dx + dy * dy) || 1;
         
-        // Apply repulsive force if nodes are too close
+        // Aplicar força repulsiva se os nós estiverem muito próximos
         if (distance < minDistance) {
           const force = repulsionFactor / (distance * distance);
           const forceX = (dx / distance) * force;
@@ -61,21 +61,21 @@ export const generateForceDirectedLayout = (
       }
     }
     
-    // Update positions based on velocities
+    // Atualizar posições com base nas velocidades
     for (const node of nodes) {
       node.x += node.vx * 0.1;
       node.y += node.vy * 0.1;
       node.vx *= 0.9; // Damping
       node.vy *= 0.9; // Damping
       
-      // Keep nodes within bounds with padding
-      const padding = 120; // Increased padding to avoid edges
+      // Mantem os nós dentro dos limites com preenchimento
+      const padding = 120; // Aumento do preenchimento para evitar bordas
       node.x = Math.max(padding, Math.min(width - padding, node.x));
       node.y = Math.max(padding, Math.min(height - padding, node.y));
     }
   }
   
-  // Store final positions
+  // Armazenar posições finais
   nodes.forEach(node => {
     positions[node.id] = { x: node.x, y: node.y };
   });
@@ -83,7 +83,7 @@ export const generateForceDirectedLayout = (
   return positions;
 };
 
-// Helper for circle layout (backup if needed)
+// Auxiliar para layout de círculo (backup se necessário)
 export const generateCircleLayout = (movies: Movie[], radius: number = 300) => {
   const positions: Record<string, {x: number, y: number}> = {};
   
@@ -98,7 +98,7 @@ export const generateCircleLayout = (movies: Movie[], radius: number = 300) => {
   return positions;
 };
 
-// Helper to create nodes from movies
+// Auxiliar para criar nós a partir de filmes
 export const createNodes = (
   movies: Movie[], 
   selectedMovieIds: number[],
@@ -107,7 +107,7 @@ export const createNodes = (
 ): Node<MovieNodeData>[] => {
   if (movies.length === 0) return [];
   
-  // Generate new layout if we don't have positions for all movies
+  // Gerar novo layout se não tivermos posições para todos os filmes
   const needNewLayout = movies.some(movie => 
     !nodePositions[movie.id.toString()]
   );
@@ -121,13 +121,13 @@ export const createNodes = (
     const isRecommended = recommendedMovieIds.includes(movie.id) && !isSelected;
     const movieId = movie.id.toString();
     
-    // Use existing position if available, otherwise use new layout positions
+    // Usa a posição existente se disponível, caso contrário, use novas posições de layout
     const position = nodePositions[movieId] || newLayout[movieId] || { 
       x: 400 + Math.random() * 300, 
       y: 350 + Math.random() * 300 
     };
     
-    // Create the node with the movie data
+    // Cria o nó com os dados do filme
     return {
       id: movieId,
       type: 'movieNode',
@@ -141,18 +141,18 @@ export const createNodes = (
   });
 };
 
-// Build adjacency list from nodes and edges for graph algorithms
+// Construir lista de adjacências a partir de nós e arestas para algoritmos de grafos
 export const buildAdjacencyList = (movies: Movie[], edges: Edge<MovieEdgeData>[]): Map<string, string[]> => {
   const adjacencyList = new Map<string, string[]>();
   
-  // Initialize empty arrays for all nodes
+  // Inicializar matrizes vazias para todos os nós
   movies.forEach(movie => {
     adjacencyList.set(movie.id.toString(), []);
   });
   
-  // Add connections from edges
+  // Adicionar conexões de bordas
   edges.forEach(edge => {
-    // For undirected graph, add both directions
+    // Para um grafo não direcionado, adicione ambas as direções
     const source = edge.source;
     const target = edge.target;
     
@@ -168,7 +168,7 @@ export const buildAdjacencyList = (movies: Movie[], edges: Edge<MovieEdgeData>[]
   return adjacencyList;
 };
 
-// DFS algorithm
+// Percurso em Profundidade
 export const depthFirstSearch = (
   adjacencyList: Map<string, string[]>, 
   startNodeId: string
@@ -194,7 +194,7 @@ export const depthFirstSearch = (
   return result;
 };
 
-// BFS algorithm
+// Percurso em Largura
 export const breadthFirstSearch = (
   adjacencyList: Map<string, string[]>, 
   startNodeId: string
@@ -221,16 +221,16 @@ export const breadthFirstSearch = (
   return result;
 };
 
-// Check if graph is connected
+// Checa se o grafo está conectado
 export const isGraphConnected = (
   adjacencyList: Map<string, string[]>
 ): boolean => {
   if (adjacencyList.size === 0) return true;
   
-  // Get first node as starting point
+  // Obtêm o primeiro nó como ponto de partida
   const startNodeId = Array.from(adjacencyList.keys())[0];
   
-  // Run DFS from first node
+  // Executa Percurso em Profundidade pelo primeiro nó
   const visited = new Set<string>();
   
   const dfs = (nodeId: string) => {
@@ -245,11 +245,11 @@ export const isGraphConnected = (
   
   dfs(startNodeId);
   
-  // If all nodes were visited, graph is connected
+  // Se todos os nós foram visitados, o grafo é conectado
   return visited.size === adjacencyList.size;
 };
 
-// Helper to create edges between movies
+// Auxilia para criar bordas entre filmes
 export const createEdges = (
   movies: Movie[],
   selectedMovieIds: number[],
@@ -257,7 +257,7 @@ export const createEdges = (
 ): Edge<MovieEdgeData>[] => {
   const edges: Edge<MovieEdgeData>[] = [];
   
-  // Generate edges for all movies that share at least one genre
+  // Gerar arestas para todos os filmes que compartilham pelo menos um gênero
   for (let i = 0; i < movies.length; i++) {
     const movie1 = movies[i];
     const isMovie1Selected = selectedMovieIds.includes(movie1.id);
@@ -268,37 +268,37 @@ export const createEdges = (
       const isMovie2Selected = selectedMovieIds.includes(movie2.id);
       const isMovie2Recommended = recommendedMovieIds.includes(movie2.id);
       
-      // Find common genres
+      // Encontrar gêneros comuns
       const commonGenres = movie1.genre_ids.filter(genre => 
         movie2.genre_ids.includes(genre)
       );
       
-      // Only create an edge if there are common genres
+      // Cria uma vantagem apenas se houver gêneros comuns
       if (commonGenres.length > 0) {
-        // Determine edge color and style based on movie selection status
-        let strokeColor = '#d1d5db'; // Default light gray
+        // Determina a cor e o estilo das bordas com base no status da seleção do filme
+        let strokeColor = '#d1d5db'; // Cinza claro padrão
         let strokeWidth = 1;
         let animated = false;
         
         // Both selected - red edge
         if (isMovie1Selected && isMovie2Selected) {
-          strokeColor = '#ea384c'; // red color
+          strokeColor = '#ea384c'; // Cor vermelha
           strokeWidth = 2;
           animated = true;
         } 
-        // One selected and one recommended - blue edge
+        // Um selecionado e um recomendado - blue edge
         else if ((isMovie1Selected && isMovie2Recommended) || 
                 (isMovie1Recommended && isMovie2Selected)) {
           strokeColor = '#3b82f6'; // blue-500
           strokeWidth = 1.5;
           animated = true;
         }
-        // One or both are recommended - lighter blue edge
+        // Um ou ambos são recomendados - lighter blue edge
         else if (isMovie1Recommended || isMovie2Recommended) {
           strokeColor = '#60a5fa'; // blue-400
           strokeWidth = 1;
         }
-        // One node is selected - gray edge
+        // Um nó está selecionado - gray edge
         else if (isMovie1Selected || isMovie2Selected) {
           strokeColor = '#9ca3af'; // gray-400
           strokeWidth = 1;
@@ -329,31 +329,31 @@ export const createEdges = (
   return edges;
 };
 
-// Fixed Dijkstra's algorithm implementation using the new JS-adapted version
+// Implementação do algoritmo de Dijkstra corrigida usando a nova versão adaptada para JS
 export const dijkstraShortestPath = (
   adjacencyList: Map<string, string[]>,
   edgeWeights: Map<string, number>,
   startNodeId: string,
   endNodeId: string
 ): { path: string[], distance: number } => {
-  // Convert the standard adjacency list to the format required by dijkstraJS
+  // Converte a lista de adjacência padrão para o formato exigido pelo dijkstraJS
   const convertedList = convertAdjacencyListFormat(adjacencyList, edgeWeights);
   
-  // Run the improved Dijkstra's algorithm
+  // Executar o algoritmo de Dijkstra aprimorado
   return dijkstraShortestPathJS(convertedList, startNodeId, endNodeId);
 };
 
-// Helper function to create edge weights map for Dijkstra and Kruskal
+// Função auxiliar para criar mapa de pesos de aresta para Dijkstra e Kruskal
 export const createEdgeWeightsMap = (edges: Edge<MovieEdgeData>[]): Map<string, number> => {
   const weightMap = new Map<string, number>();
   
   edges.forEach(edge => {
     const sourceTarget = `${edge.source}-${edge.target}`;
-    // Use the inverse of common genres strength as weight
-    // More common genres = stronger connection = lower weight
+    // Usar o inverso da força dos gêneros comuns como peso
+    // Gêneros mais comuns = conexão mais forte = menor peso
     const weight = edge.data?.strength 
       ? 1 / (edge.data.strength) 
-      : 1;  // Default weight if strength is not available
+      : 1;  // Peso padrão se a força não estiver disponível
     
     weightMap.set(sourceTarget, weight);
   });
@@ -361,7 +361,7 @@ export const createEdgeWeightsMap = (edges: Edge<MovieEdgeData>[]): Map<string, 
   return weightMap;
 };
 
-// Kruskal's algorithm implementation
+// Implementação do algoritmo de Kruskal
 export interface KruskalEdge {
   source: string;
   target: string;
@@ -372,17 +372,17 @@ export const findMinimumSpanningTree = (
   nodes: string[],
   edges: Edge<MovieEdgeData>[]
 ): KruskalEdge[] => {
-  // Create a disjoint set data structure
+  // Criar uma estrutura de dados de conjunto disjunto
   const parent: Record<string, string> = {};
   const rank: Record<string, number> = {};
   
-  // Initialize disjoint set
+  // Inicializar conjunto disjunto
   nodes.forEach(node => {
     parent[node] = node;
     rank[node] = 0;
   });
   
-  // Find operation with path compression
+  // Encontrar operação com compressão de caminho
   const find = (node: string): string => {
     if (parent[node] !== node) {
       parent[node] = find(parent[node]);
@@ -390,7 +390,7 @@ export const findMinimumSpanningTree = (
     return parent[node];
   };
   
-  // Union operation with rank
+  // Operação sindical com classificação
   const union = (node1: string, node2: string): void => {
     const root1 = find(node1);
     const root2 = find(node2);
@@ -407,26 +407,26 @@ export const findMinimumSpanningTree = (
     }
   };
   
-  // Convert edges to a format suitable for Kruskal's algorithm
+  // Converter arestas para um formato adequado ao algoritmo de Kruskal
   const kruskalEdges: KruskalEdge[] = [];
-  const edgeSet = new Set(); // To avoid duplicate edges in undirected graph
+  const edgeSet = new Set(); // Para evitar arestas duplicadas em grafos não direcionados
   
   edges.forEach(edge => {
     const sourceTarget = `${edge.source}-${edge.target}`;
     const targetSource = `${edge.target}-${edge.source}`;
     
-    // Avoid adding duplicate edges in undirected graph
+    // Evite adicionar arestas duplicadas em grafos não direcionados
     if (edgeSet.has(sourceTarget) || edgeSet.has(targetSource)) {
       return;
     }
     
     edgeSet.add(sourceTarget);
     
-    // Use the inverse of common genres strength as weight
-    // More common genres = stronger connection = lower weight
+    // Usar o inverso da força dos gêneros comuns como peso
+    // Gêneros mais comuns = conexão mais forte = menor peso
     const weight = edge.data?.strength 
       ? 1 / (edge.data.strength) 
-      : 1;  // Default weight if strength is not available
+      : 1;  // Peso padrão se a força não estiver disponível
       
     kruskalEdges.push({
       source: edge.source,
@@ -435,10 +435,10 @@ export const findMinimumSpanningTree = (
     });
   });
   
-  // Sort edges by weight (ascending)
+  // Classificar arestas por peso (crescente)
   kruskalEdges.sort((a, b) => a.weight - b.weight);
   
-  // Apply Kruskal's algorithm
+  // Aplicar o algoritmo de Kruskal
   const mst: KruskalEdge[] = [];
   
   for (const edge of kruskalEdges) {
@@ -447,7 +447,7 @@ export const findMinimumSpanningTree = (
       union(edge.source, edge.target);
     }
     
-    // If we have n-1 edges, we've formed the MST
+    // Se tivermos n-1 arestas, formamos o MST
     if (mst.length === nodes.length - 1) {
       break;
     }
@@ -456,12 +456,12 @@ export const findMinimumSpanningTree = (
   return mst;
 };
 
-// Convert minimum spanning tree to graph traversal order
+// Converter árvore de extensão mínima em ordem de travessia de grafo
 export const getMstTraversalOrder = (
   mst: KruskalEdge[],
   startNodeId: string
 ): string[] => {
-  // Create adjacency list from MST
+  // Criar lista de adjacências a partir do MST
   const mstAdjacencyList: Map<string, string[]> = new Map();
   
   mst.forEach(edge => {
@@ -476,7 +476,7 @@ export const getMstTraversalOrder = (
     mstAdjacencyList.get(edge.target)!.push(edge.source);
   });
   
-  // Do a DFS on the MST starting from startNodeId
+  // Faça um DFS no MST começando pelo startNodeId
   const visited = new Set<string>();
   const result: string[] = [];
   

@@ -34,22 +34,22 @@ export interface FilterOptions {
   searchQuery: string;
 }
 
-// Define custom data for movie nodes
+// Define dados personalizados para nós de filme
 export interface MovieNodeData {
   movie: Movie;
   selected: boolean;
   recommended?: boolean;
-  [key: string]: unknown; // Add index signature for compatibility with ReactFlow
+  [key: string]: unknown; // Adiciona assinatura de índice para compatibilidade com ReactFlow
 }
 
-// Define custom data for movie edges
+// Definir dados personalizados para bordas de filme
 export interface MovieEdgeData {
-  commonGenres?: number[]; // Store the common genres between movies
-  strength?: number;       // Number of common genres (edge weight)
+  commonGenres?: number[]; // Armazene os gêneros comuns entre os filmes
+  strength?: number;       // Número de gêneros comuns (peso da borda)
   recommended?: boolean;
-  [key: string]: unknown; // Add index signature for compatibility with ReactFlow
+  [key: string]: unknown; // Adicionar assinatura de índice para compatibilidade com ReactFlow
 }
 
-// Define our custom node and edge types
+// Defina nossos tipos de nós e arestas personalizados
 export type GraphNode = Node<MovieNodeData>;
 export type GraphEdge = Edge<MovieEdgeData>;

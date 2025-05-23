@@ -19,18 +19,18 @@ export const fetchMovies = async (page: number = 1, filter?: FilterOptions): Pro
   let url = `${BASE_URL}/discover/movie?include_adult=false&include_video=false&language=pt-BR&page=${page}&sort_by=popularity.desc`;
   
   if (filter) {
-    // Add genre filtering
+    // Adiciona filtragem de gênero
     if (filter.genres.length > 0) {
       url += `&with_genres=${filter.genres.join('|')}`;
     }
     
-    // Add year filtering
+    // Adiciona filtragem por ano
     if (filter.yearRange[0] !== 1900 || filter.yearRange[1] !== new Date().getFullYear()) {
       url += `&primary_release_date.gte=${filter.yearRange[0]}-01-01`;
       url += `&primary_release_date.lte=${filter.yearRange[1]}-12-31`;
     }
     
-    // Add rating filtering
+    // Adiciona filtragem de classificação
     if (filter.ratingRange[0] !== 0 || filter.ratingRange[1] !== 10) {
       url += `&vote_average.gte=${filter.ratingRange[0]}`;
       url += `&vote_average.lte=${filter.ratingRange[1]}`;
@@ -75,7 +75,7 @@ export const fetchGenres = async (): Promise<GenresResponse> => {
 export const createMovieRecommendationGraph = (movies: Movie[]): { nodes: GraphNode[], edges: GraphEdge[] } => {
   if (!movies.length) return { nodes: [], edges: [] };
   
-  // Create nodes for each movie
+  // Cria nós para cada filme
   const nodes: GraphNode[] = movies.map((movie, index) => ({
     id: movie.id.toString(),
     type: 'movieNode',
@@ -89,7 +89,7 @@ export const createMovieRecommendationGraph = (movies: Movie[]): { nodes: GraphN
     }
   }));
   
-  // Create edges between movies with similar genres
+  // Cria limites entre filmes de gêneros semelhantes
   const edges: GraphEdge[] = [];
   
   for (let i = 0; i < movies.length; i++) {
@@ -98,12 +98,12 @@ export const createMovieRecommendationGraph = (movies: Movie[]): { nodes: GraphN
     for (let j = i + 1; j < movies.length; j++) {
       const movie2 = movies[j];
       
-      // Find common genres
+      // Encontra gêneros comuns
       const commonGenres = movie1.genre_ids.filter(genre => 
         movie2.genre_ids.includes(genre)
       );
       
-      // If there are common genres, create an edge
+      // Se houver gêneros comuns, cria uma vantagem
       if (commonGenres.length > 0) {
         edges.push({
           id: `edge-${movie1.id}-${movie2.id}`,
